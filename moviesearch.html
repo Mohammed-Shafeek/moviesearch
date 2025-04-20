@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Movie Search App</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #0f172a;
+      color: #f1f5f9;
+      padding: 2rem;
+      text-align: center;
+    }
+
+    h1 {
+      color: #38bdf8;
+      margin-bottom: 1.5rem;
+    }
+
+    .search-container {
+      margin-bottom: 2rem;
+    }
+
+    input[type="text"] {
+      padding: 0.6rem 1rem;
+      width: 250px;
+      max-width: 90%;
+      border-radius: 8px;
+      border: none;
+      font-size: 1rem;
+    }
+
+    button {
+      padding: 0.6rem 1rem;
+      margin-left: 0.5rem;
+      background-color: #38bdf8;
+      border: none;
+      color: white;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+
+    #movie-list {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 1.5rem;
+      margin-top: 2rem;
+    }
+
+    .movie-card {
+      background-color: #1e293b;
+      border-radius: 12px;
+      padding: 1rem;
+      width: 200px;
+      text-align: center;
+    }
+
+    .movie-card img {
+      width: 100%;
+      height: auto;
+      border-radius: 8px;
+    }
+
+    .movie-card h3 {
+      font-size: 1rem;
+      margin: 0.5rem 0 0.3rem;
+    }
+
+    .movie-card p {
+      color: #94a3b8;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <h1>🎬 Movie Search</h1>
+
+  <div class="search-container">
+    <input id="searchInput" type="text" placeholder="Search for a movie..." />
+    <button onclick="searchMovies()">Search</button>
+  </div>
+
+  <div id="movie-list"></div>
+
+  <script>
+    async function searchMovies() {
+      const query = document.getElementById('searchInput').value.trim();
+      const apiKey = 'a55ac1f5'; // Replace with your OMDb API key
+
+      if (!query) {
+        alert('Please enter a movie name.');
+        return;
+      }
+
+      const url = 'https://www.omdbapi.com/?s=Inception&apikey=a55ac1f5';
+      const response = await fetch(url);
+      const data = await response.json();
+
+      const movieList = document.getElementById('movie-list');
+      movieList.innerHTML = '';
+
+      if (data.Response === 'True') {
+        data.Search.forEach(movie => {
+          const card = document.createElement('div');
+          card.className = 'movie-card';
+          card.innerHTML = `
+            <img src="${movie.Poster !== 'N/A' ? movie.Poster : 'https://via.placeholder.com/200x300'}" alt="${movie.Title}" />
+            <h3>${movie.Title}</h3>
+            <p>${movie.Year}</p>
+          `;
+          movieList.appendChild(card);
+        });
+      } else {
+        movieList.innerHTML = `<p>No movies found for "<strong>${query}</strong>".</p>`;
+      }
+    }
+  </script>
+</body>
+</html>
